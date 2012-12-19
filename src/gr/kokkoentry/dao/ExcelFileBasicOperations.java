@@ -227,10 +227,9 @@ public class ExcelFileBasicOperations {
 	public static void main(String[] args) throws IOException {
 		try {
 			String filePathWindosOS = "C:\\Users\\gerassimos\\Devel\\kokkodentry\\files\\test1.xls";
-			// String filePathLinuxOS =
-			// "/home/gerassimos/workspace/kokkodentry/files/test1.xls";
+			 String filePathLinuxOS =	 "/home/gerassimos/workspace/kokkodentry/files/test1.xls";
 			ExcelFileBasicOperations test = new ExcelFileBasicOperations();
-			test.setInputFile(filePathWindosOS);
+			test.setInputFile(filePathLinuxOS);
 			test.read();
 			test.initializeFileWithCaption();
 			// successfully

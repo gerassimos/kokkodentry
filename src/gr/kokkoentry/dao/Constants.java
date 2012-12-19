@@ -1,19 +1,21 @@
 package gr.kokkoentry.dao;
 
+import gr.kokkoentry.model.BeanPerOre;
+
 public class Constants {
 
 	public static final int NR_OF_KOSKINA = 5;
 	
-	enum ORIKTA_ENUM{
+	public enum ORIKTA_ENUM{
 		quartzo("quartzo",1),
 		astrio("astrio",2),
 		byotype("byotype",3);
 		
 		private String displayString;
-		private int code;
+		private int relativePosition;
 		private ORIKTA_ENUM(String displayString, int code) {
 			this.displayString = displayString;
-			this.code = code;
+			this.relativePosition = code;
 		}
 		public String getDisplayString() {
 			return displayString;
@@ -21,17 +23,16 @@ public class Constants {
 		public void setDisplayString(String displayString) {
 			this.displayString = displayString;
 		}
-		public int getCode() {
-			return code;
+		public int getRelativePosition() {
+			return relativePosition;
 		}
-		public void setCode(int code) {
-			this.code = code;
+		public void setRelativePosition(int relativePosition) {
+			this.relativePosition = relativePosition;
 		}
-		
-		public static ORIKTA_ENUM getEnumFromCode(int code){
+		public static ORIKTA_ENUM getEnumFromRelativePosition(int position){
 			ORIKTA_ENUM resut = null;
 			for(ORIKTA_ENUM a :values()){
-				if(a.getCode()==code){
+				if(a.getRelativePosition()==position){
 					resut=a;
 				}
 			}
@@ -42,6 +43,17 @@ public class Constants {
 			String [] result = new String [values().length];
 			for(ORIKTA_ENUM a :values()){
 				result[a .ordinal()]=a.getDisplayString(); 
+			}
+			return result;
+		}
+		
+		public static BeanPerOre [] getSieveBeanPerOre(){
+			BeanPerOre [] result = new BeanPerOre [values().length];
+			for(ORIKTA_ENUM orikto :values()){
+				BeanPerOre beanPerOre = new BeanPerOre();
+				beanPerOre.setOreName(orikto.getDisplayString());
+				beanPerOre.setRelativePosition(orikto.getRelativePosition());
+				result[orikto .ordinal()]= beanPerOre; 
 			}
 			return result;
 		}

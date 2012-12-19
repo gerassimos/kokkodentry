@@ -1,7 +1,9 @@
 package gr.kokkoentry.dao;
 
 import gr.kokkoentry.dao.Constants.ORIKTA_ENUM;
-import gr.kokkoentry.model.Samle;
+import gr.kokkoentry.model.BeanPerOre;
+import gr.kokkoentry.model.OresPerSieve;
+import gr.kokkoentry.model.Sample;
 
 import java.io.File;
 import java.io.IOException;
@@ -71,12 +73,12 @@ public class ExcelFileBasicOperations {
 		Sheet sheet = workbook.getSheet(0);
 
 		if (!isCaptionAvailable(sheet, 4)) {
-			write(null, ACTION_CREATE_CAPTION);
+			write(null, 0,0, ACTION_CREATE_CAPTION);
 		}
 
 	}
 
-	private void write(Samle samle, int action) throws IOException, WriteException, BiffException {
+	private void write(Sample sample,int offset, int row,int action) throws IOException, WriteException, BiffException {
 		WritableWorkbook workbook = null;
 		try {
 			File file = new File(inputFile);
@@ -92,6 +94,7 @@ public class ExcelFileBasicOperations {
 			}
 			case ACTION_ADD_SAMLE: {
 				createContent(excelSheet);
+				addSamle(excelSheet, sample, offset, row);
 				break;
 			}
 			}
@@ -196,6 +199,23 @@ public class ExcelFileBasicOperations {
 
 	}
 
+	private void addSamle(WritableSheet sheet, Sample sample ,int offset, int row) throws WriteException,	RowsExceededException {
+	  int column = 0;
+	  OresPerSieve [] oresPerSieveArray = sample.getOresPerSieveArray();
+	   for (int i = 0; i < Constants.NR_OF_KOSKINA; i++) {
+	      OresPerSieve oresPerSieve = oresPerSieveArray[i];
+	      BeanPerOre[] beanPerOreArray = oresPerSieve.getBeanPerOreArray();
+	      for (BeanPerOre beanPerOre : beanPerOreArray) {
+	        column = offset + beanPerOre.getRelativePosition() + (i * ORIKTA_ENUM.values().length);
+	        // addCaption(sheet, column, 0, header + i );
+	        System.out.println("add "+ beanPerOre.getOreName()+" : "+ beanPerOre.getNrOfBeans());
+	        addNumber(sheet, column, row, beanPerOre.getNrOfBeans());
+	      }
+	    }
+	   
+
+	}
+
 	public void addCaption(WritableSheet sheet, int column, int row, String s)
 			throws RowsExceededException, WriteException {
 		Label label;
@@ -232,10 +252,30 @@ public class ExcelFileBasicOperations {
 			test.setInputFile(filePathWindosOS);
 			test.read();
 			test.initializeFileWithCaption();
+			Sample sample = generateSample();
+			test.write(sample, 3, 20, ACTION_ADD_SAMLE);
 			// successfully
 			System.out.println("Write successfully");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
+  private static Sample generateSample() {
+    Sample result = new Sample();
+    
+    OresPerSieve [] oresPerSieveArray = result.getOresPerSieveArray();
+    for (int i = 0; i < Constants.NR_OF_KOSKINA; i++) {
+       OresPerSieve oresPerSieve = oresPerSieveArray[i];
+       BeanPerOre[] beanPerOreArray = oresPerSieve.getBeanPerOreArray();
+       for (BeanPerOre beanPerOre : beanPerOreArray) {
+         beanPerOre .setNrOfBeans(2);
+         // addCaption(sheet, column, 0, header + i );
+         System.out.println("add "+ beanPerOre.getOreName()+" : "+ beanPerOre.getNrOfBeans());
+         
+       }
+     }
+    
+    return result;
+  }
 }

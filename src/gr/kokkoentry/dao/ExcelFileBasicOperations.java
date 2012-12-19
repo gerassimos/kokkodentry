@@ -229,7 +229,7 @@ public class ExcelFileBasicOperations {
 			String filePathWindosOS = "C:\\Users\\gerassimos\\Devel\\kokkodentry\\files\\test1.xls";
 			 String filePathLinuxOS =	 "/home/gerassimos/workspace/kokkodentry/files/test1.xls";
 			ExcelFileBasicOperations test = new ExcelFileBasicOperations();
-			test.setInputFile(filePathLinuxOS);
+			test.setInputFile(filePathWindosOS);
 			test.read();
 			test.initializeFileWithCaption();
 			// successfully

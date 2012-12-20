@@ -15,7 +15,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.border.LineBorder;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo
@@ -52,17 +51,17 @@ public class MainGUI extends JFrame {
     GridBagLayout thisLayout = new GridBagLayout();
     thisLayout.columnWeights = new double[] {0.1, 0.1, 0.1};
     thisLayout.columnWidths = new int[] {7, 7, 7};
-    thisLayout.rowWeights = new double[] {0.1, 0.1, 0.1};
-    thisLayout.rowHeights = new int[] {7, 7, 7};
+    thisLayout.rowWeights = new double[] {0.0, 0.0, 0.0, 1.0};
+    thisLayout.rowHeights = new int[] {7, 7, 7, 7};
 
     getContentPane().setLayout(thisLayout);
     this.setSize(800, 600);
 
     jPanelHead = getJPanelHead();
-    getContentPane().add(jPanelHead, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+    getContentPane().add(jPanelHead, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL, new Insets(10, 10, 10, 10), 0, 0));
 
     jPanelSampleOre = getJPanelSampleOre();
-    getContentPane().add(jPanelSampleOre, new GridBagConstraints(0, 1, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+    getContentPane().add(jPanelSampleOre, new GridBagConstraints(0, 1, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(10, 10, 10, 10), 0, 0));
 
     {
       jButtonSave = new JButton();

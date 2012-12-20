@@ -1,12 +1,15 @@
 package gr.kokkoentry.gui;
 import static gr.kokkoentry.util.SwingConsole.run;
+import gr.kokkoentry.dao.Constants.ORIKTA_ENUM;
 import gr.kokkoentry.dao.ExcelFileBasicOperations;
+import gr.kokkoentry.model.Sample;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -34,38 +37,57 @@ public class MainGUI extends JFrame {
    */
   private static final long serialVersionUID = 1L;
   private JPanel jPanelHead;
+  private JPanel jPanelSampleOre;
+  private JPanel jPanelFileChooser;
+  
   private JLabel jLabelArea;
-  private JButton jButtonSave;
   private JLabel jLabelKoskino0;
   private JLabel jLabelKoskino1;
   private JLabel jLabelKoskino2;
   private JLabel jLabelKoskino3;
   private JLabel jLabelKoskino4;
-  private JPanel jPanelSampleOre;
-  private JTextField jTextFieldArea;
   private JLabel jLabelSCV;
   private JLabel jLabelAA;
+  
+  private JTextField jTextFieldArea;
+//  private JTextField jTextField1 = new JTextField();
+//  private JTextField jTextField2 = new JTextField();
+//  private JTextField jTextField3 = new JTextField();
+//  private JTextField jTextField4 = new JTextField();
+//  private JTextField jTextField5 = new JTextField();
+  
+  private JButton jButtonSave;
+  
+  private JTextField[] jTextFieldKoskino0 = new JTextField[ORIKTA_ENUM.values().length];
+  private JTextField[] jTextFieldKoskino1 = new JTextField[ORIKTA_ENUM.values().length];
+  private JTextField[] jTextFieldKoskino2 = new JTextField[ORIKTA_ENUM.values().length];
+  private JTextField[] jTextFieldKoskino3 = new JTextField[ORIKTA_ENUM.values().length];
+  private JTextField[] jTextFieldKoskino4 = new JTextField[ORIKTA_ENUM.values().length];
+  
+  private JLabel[] jLabelOrikta = new JLabel[ORIKTA_ENUM.values().length];
 
   private MainGUI() {
     super();
     GridBagLayout thisLayout = new GridBagLayout();
     thisLayout.columnWeights = new double[] {0.1, 0.1, 0.1};
     thisLayout.columnWidths = new int[] {7, 7, 7};
-    thisLayout.rowWeights = new double[] {0.0, 0.0, 0.0, 1.0};
-    thisLayout.rowHeights = new int[] {7, 7, 7, 7};
-
+    thisLayout.rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 1.0};
+    thisLayout.rowHeights = new int[] {20, 7, 7, 7, 7};
     getContentPane().setLayout(thisLayout);
-    this.setSize(800, 600);
+    setSize(800 , 600);
+
+    jPanelFileChooser = new FileChooser();
+    getContentPane().add(jPanelFileChooser, new GridBagConstraints(0, 0, 2, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 
     jPanelHead = getJPanelHead();
-    getContentPane().add(jPanelHead, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL, new Insets(10, 10, 10, 10), 0, 0));
+    getContentPane().add(jPanelHead, new GridBagConstraints(0, 1, 3, 1, 0.0, 0.0, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL, new Insets(10, 10, 10, 10), 0, 0));
 
     jPanelSampleOre = getJPanelSampleOre();
-    getContentPane().add(jPanelSampleOre, new GridBagConstraints(0, 1, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(10, 10, 10, 10), 0, 0));
+    getContentPane().add(jPanelSampleOre, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(10, 10, 10, 10), 0, 0));
 
     {
       jButtonSave = new JButton();
-      getContentPane().add(jButtonSave, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+      getContentPane().add(jButtonSave, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
       jButtonSave.setText("Save");
 
       jButtonSave.addActionListener(new ActionListener() {
@@ -75,12 +97,18 @@ public class MainGUI extends JFrame {
           System.out.println("test");
 
           try {
-            String filePathWindosOS = "C:\\Users\\gerassimos\\Devel\\kokkodentry\\files\\test1.xls";
-            String filePathLinuxOS =  "/home/gerassimos/workspace/kokkodentry/files/test1.xls";
+//            String filePathWindosOS = "C:\\Users\\gerassimos\\Devel\\kokkodentry\\files\\test1.xls";
+//            String filePathLinuxOS =  "/home/gerassimos/workspace/kokkodentry/files/test1.xls";
+            File selectedFile = ((FileChooser) jPanelFileChooser).getSelectedFile();
             ExcelFileBasicOperations test = new ExcelFileBasicOperations();
-            test.setInputFile(filePathWindosOS);
+            test.setInputFile(selectedFile.getAbsolutePath());
             test.read();
             test.initializeFileWithCaption();
+            
+            JTextField[][] jTextFieldKoskina = {jTextFieldKoskino0, jTextFieldKoskino1, jTextFieldKoskino2, jTextFieldKoskino3 ,jTextFieldKoskino4};
+            Sample sample = convertToSample(jTextFieldKoskina);
+            
+            test.addSample(sample, 5, 3);
             // successfully
             System.out.println("Write successfully");
           } catch (Exception e) {
@@ -91,6 +119,17 @@ public class MainGUI extends JFrame {
                 JOptionPane.ERROR_MESSAGE);
           }
 
+        }
+
+        private Sample convertToSample(JTextField[][] jTextFieldKoskina) {
+          // TODO Auto-generated method stub
+//          Sample sample = new Sample();
+//          int i=0;
+//          for(JTextField[]jTextFieldKoskino : jTextFieldKoskina){
+//            
+//            
+//          }
+          return null;
         }
       });
     }
@@ -105,9 +144,9 @@ public class MainGUI extends JFrame {
     jPanelSampleOre = new JPanel();
     GridBagLayout jPanelSamleOreLayout = new GridBagLayout();
     jPanelSamleOreLayout.columnWidths = new int[] {7, 7, 7, 7, 7 ,7};
-    jPanelSamleOreLayout.rowHeights = new int[] {7, 7, 7, 7, 7};
+//    jPanelSamleOreLayout.rowHeights = new int[] {7, 7, 7, 7, 7 ,7};
     jPanelSamleOreLayout.columnWeights = new double[] {0.1, 0.1, 0.1, 0.1, 0.1, 0.1};
-    jPanelSamleOreLayout.rowWeights = new double[] {0.1, 0.1, 0.1, 0.1, 0.1};
+//    jPanelSamleOreLayout.rowWeights = new double[] {0.1, 0.1, 0.1, 0.1, 0.1};
     jPanelSampleOre.setLayout(jPanelSamleOreLayout);
     jPanelSampleOre.setBorder(BorderFactory.createTitledBorder("Sample"));
 
@@ -117,11 +156,46 @@ public class MainGUI extends JFrame {
     jLabelKoskino3 = new JLabel("Koskino 3");
     jLabelKoskino4 = new JLabel("Koskino 4");
 
-    jPanelSampleOre.add(jLabelKoskino0, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    jPanelSampleOre.add(jLabelKoskino1, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    jPanelSampleOre.add(jLabelKoskino2, new GridBagConstraints(3, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    jPanelSampleOre.add(jLabelKoskino3, new GridBagConstraints(4, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    jPanelSampleOre.add(jLabelKoskino4, new GridBagConstraints(5, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+    jPanelSampleOre.add(jLabelKoskino0, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+    jPanelSampleOre.add(jLabelKoskino1, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+    jPanelSampleOre.add(jLabelKoskino2, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+    jPanelSampleOre.add(jLabelKoskino3, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+    jPanelSampleOre.add(jLabelKoskino4, new GridBagConstraints(5, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+    
+    for(ORIKTA_ENUM orikto :ORIKTA_ENUM.values()){
+      jLabelOrikta[orikto .ordinal()]= new JLabel();
+      jLabelOrikta[orikto .ordinal()].setText(orikto.getDisplayString());
+      jPanelSampleOre.add(jLabelOrikta[orikto .ordinal()], new GridBagConstraints(0, 1 + orikto .ordinal(), 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0));
+    }
+    
+    
+//    jPanelSampleOre.add(jTextField1, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0));
+//    jPanelSampleOre.add(jTextField2, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0));
+//    jPanelSampleOre.add(jTextField3, new GridBagConstraints(3, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0));
+//    jPanelSampleOre.add(jTextField4, new GridBagConstraints(4, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+//    jPanelSampleOre.add(jTextField5, new GridBagConstraints(5, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+    
+    
+    for(ORIKTA_ENUM orikto :ORIKTA_ENUM.values()){
+      jTextFieldKoskino0[orikto .ordinal()]= new JTextField();
+      jPanelSampleOre.add(jTextFieldKoskino0[orikto .ordinal()], new GridBagConstraints(1, 1 + orikto .ordinal(), 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0));
+    }
+    for(ORIKTA_ENUM orikto :ORIKTA_ENUM.values()){
+      jTextFieldKoskino1[orikto .ordinal()]= new JTextField();
+      jPanelSampleOre.add(jTextFieldKoskino1[orikto .ordinal()], new GridBagConstraints(2, 1 + orikto .ordinal(), 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0));
+    }
+    for(ORIKTA_ENUM orikto :ORIKTA_ENUM.values()){
+      jTextFieldKoskino2[orikto .ordinal()]= new JTextField();
+      jPanelSampleOre.add(jTextFieldKoskino2[orikto .ordinal()], new GridBagConstraints(3, 1 + orikto .ordinal(), 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0));
+    }
+    for(ORIKTA_ENUM orikto :ORIKTA_ENUM.values()){
+      jTextFieldKoskino3[orikto .ordinal()]= new JTextField();
+      jPanelSampleOre.add(jTextFieldKoskino3[orikto .ordinal()], new GridBagConstraints(4, 1 + orikto .ordinal(), 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0));
+    }
+    for(ORIKTA_ENUM orikto :ORIKTA_ENUM.values()){
+      jTextFieldKoskino4[orikto .ordinal()]= new JTextField();
+      jPanelSampleOre.add(jTextFieldKoskino4[orikto .ordinal()], new GridBagConstraints(5, 1 + orikto .ordinal(), 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0));
+    }
 
 
     return jPanelSampleOre;
